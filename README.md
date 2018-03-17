@@ -21,17 +21,13 @@ cd mynix
 # Setup disks, providing the hard disk device as an argument
 ./prep_disk_and_config.sh /dev/sda
 
-# Setup user from github (no arguments for now, TODO)
-./prep_user.sh
+# Setup user from github
+./prep_user.sh johnpmayer
 
-# Edit the written configuration (see below)
-vi /mnt/etc/nixos/configuration.nix
-```
+# Make final edits to the config
+./prep_configs.sh
 
-* Add the user-configuration.nix to the imports
-* Uncomment openssh daemon to enable
-
-```bash
+# Invoke the installation
 nixos-install --no-root-passwd
 reboot
 ```

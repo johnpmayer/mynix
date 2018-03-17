@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 set -eu
 
+username=$1
+password_hash=$(nix-shell -p mkpasswd --command "mkpasswd -m sha-512")
+
 function print_keys {
-	curl --silent https://api.github.com/users/johnpmayer/keys | \
+	curl --silent "https://api.github.com/users/${username}/keys" | \
 		nix-shell --packages jq --command "jq '.[] | .key'"
 }
 
@@ -14,11 +17,12 @@ function write_user_configuration {
 {
   imports = [ ];
 
-  users.extraUsers.john =
+  users.extraUsers.${username} =
     { isNormalUser = true;
-      home = "/home/john";
-      description = "John P Mayer, Jr.";
+      home = "/home/${username}";
+      description = "NixOS managed user ${username}";
       extraGroups = [ "wheel" ];
+      hashedPassword = "${password_hash}";
       openssh.authorizedKeys.keys = [
 EOF
 
